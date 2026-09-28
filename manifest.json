@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Template",
+    "version": "Template",
+    "description": "Template",
+    "permissions": ["activeTab", "scripting"],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
