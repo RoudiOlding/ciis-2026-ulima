@@ -33,11 +33,42 @@ btnProcesar.addEventListener('click', async () => {
     // ---------------------------------------------------------
     // TALLER: IMPLEMENTACIÓN
     // ---------------------------------------------------------
-    
-    // TODO 1. Variables de configuración (Lo llenarán contigo)
-    
-    // TODO: 2. Escribir la petición (fetch) a la API de Groq
-    
-    // TODO: 3. Mostrar el resultado en el resultadoDiv
-    
+
+    const API_KEY = "…"
+    const MODELO = "openai/gpt-oss-safeguard-20b"
+    const SYSTEM_PROMPT = "Eres un experto en accesibilidad. Adaptarás el texto recibido bajo pautas de accesibilidad cognitiva y devolverás un solo párrafo como respuesta."
+
+    try {
+        const respuesta = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: MODELO,
+                messages: [
+                    { role: "system", content: SYSTEM_PROMPT },
+                    { role: "user", content: textoAProcesar }
+                ]
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if(!respuesta.ok){
+            resultadoDiv.innerText = 'Error de Groq: ${data.error?.message}';
+            console.error("Detalle del error:", data);
+            btnProcesar.disabled = false;
+        }
+
+        // Camino Bueno
+        resultadoDiv.innerText = data.choices[0].message.content;
+        btnProcesar.disabled = false;
+    } catch (error) {
+        resultadoDiv.innerText = "Hubo un error.";
+        console.error("Error:", error);
+        btnProcesar.disabled = false;
+    }
+
 });
